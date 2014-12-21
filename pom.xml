@@ -33,7 +33,7 @@
                             <arguments></arguments>
                         </configuration>
                     </execution>
-                  <execution>
+                    <execution>
                         <id>exe-javah</id>
                         <phase>generate-sources</phase>
                         <goals>
@@ -41,7 +41,13 @@
                         </goals>
                         <configuration>
                             <executable>javah</executable>
-                            <arguments></arguments>
+                            <arguments>
+                                <argument>-d</argument>
+                                <argument>target/c/gen</argument>
+                                <argument>-classpath</argument>
+                                <argument>src/main/java</argument>
+                                <argument>com.akolov.notipy.Notipy_linux</argument>
+                            </arguments>
                         </configuration>
                     </execution>
                 </executions>
