@@ -119,18 +119,20 @@
                                     <executable>gcc</executable>
                                     <arguments>
                                         <argument>-shared</argument>
-                                        <argument>-otarget/c/so/notipy.so</argument>
+                                        <argument>-otarget/c/notipy.so</argument>
                                         <argument>target/c/notipy.o</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
-
                         </executions>
                     </plugin>
                 </plugins>
                 <resources>
                     <resource>
-                        <directory>target/c/so</directory>
+                        <directory>target/c</directory>
+                        <includes>
+                            <include>*.so</include>
+                        </includes>
                     </resource>
 
                 </resources>
