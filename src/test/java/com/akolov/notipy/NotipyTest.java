@@ -26,12 +26,13 @@ public class NotipyTest {
         }
     };
 
-    @Test
+    private Notipy subject = new Notipy();
 
+    @Test
     public void testAddWatch() throws Exception {
 
-        int handle = Notipy.addWatch("/", 1, true, listener);
-        Notipy.removeWatch(handle);
+        String handle = subject.addWatch("/", 1, true, listener);
+        subject.removeWatch(handle);
     }
 
 }

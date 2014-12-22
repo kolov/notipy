@@ -12,7 +12,7 @@ SOURCEDIR = /mnt/russ/dev/hotchocolate/tutorials/jni
 
 install:
 	echo javac src/main/java/com/akolov/notipy/Notipy.java
-	javah -d target/c/gen -classpath src/main/java com.akolov.notipy.Notipy_linux
+	javah -d target/c/gen -classpath src/main/java com.akolov.notipy.linux.Notipy_linux
 	gcc -I/usr/lib/jvm/java-6-sun/include -I/usr/lib/jvm/java-6-sun/include/linux -O3 -Wall -Werror -c -fmessage-length=0 -fPIC -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o"$@" "$<"
 
 

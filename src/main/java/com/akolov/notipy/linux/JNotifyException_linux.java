@@ -1,4 +1,6 @@
-package com.akolov.notipy;
+package com.akolov.notipy.linux;
+
+import com.akolov.notipy.JNotifyException;
 
 public class JNotifyException_linux extends JNotifyException
 {

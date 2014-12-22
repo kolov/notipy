@@ -34,8 +34,11 @@
  * Author : Omry Yadan
  ******************************************************************************/
  
-package com.akolov.notipy;
+package com.akolov.notipy.linux;
 
+
+import com.akolov.notipy.INotifyListener;
+import com.akolov.notipy.JNotifyException;
 
 public class Notipy_linux
 {

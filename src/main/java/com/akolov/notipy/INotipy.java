@@ -36,49 +36,11 @@
 
 package com.akolov.notipy;
 
-import com.akolov.notipy.linux.JNotifyAdapterLinux;
-import com.akolov.notipy.scan.NotifyScanAdapter;
 
-
-public class Notipy {
-    public static final int FILE_CREATED = 0x1;
-    public static final int FILE_DELETED = 0x2;
-    public static final int FILE_MODIFIED = 0x4;
-    public static final int FILE_RENAMED = 0x8;
-    public static final int FILE_ANY = FILE_CREATED | FILE_DELETED | FILE_MODIFIED | FILE_RENAMED;
-
-    private INotipy _instance;
-    
-    public Notipy() {
-        Mode mode = new ModeDetector().getOsName();
-        initInMode(mode);
-    }
-
-    public Notipy(Mode mode) {
-        initInMode(mode);
-    }
-
-    private void initInMode(Mode mode) {
-        switch (mode) {
-            case SCAN:
-                _instance = new NotifyScanAdapter();
-                break;
-            case INOTIFY:
-                _instance = new JNotifyAdapterLinux();
-                break;
-            default:
-                throw new RuntimeException("Unexpected");
-        }
-    }
-
+public interface INotipy {
     public String addWatch(String path, int mask, boolean watchSubtree, NotipyListener listener) throws
-            JNotifyException {
-        return _instance.addWatch(path, mask, watchSubtree, listener);
-    }
+            JNotifyException;
 
-    public boolean removeWatch(String watchId) throws JNotifyException {
-        return _instance.removeWatch(watchId);
-    }
-
+    public boolean removeWatch(String wd) throws JNotifyException;
 
 }

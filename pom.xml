@@ -32,30 +32,21 @@
                 <version>1.3.2</version>
                 <executions>
                     <execution>
-                        <id>exe-make</id>
-                        <!--phase>generate-sources</phase-->
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>make</executable>
-                            <arguments></arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>exe-javah</id>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>exec</goal>
                         </goals>
+
                         <configuration>
+                            <executable>java</executable>
                             <executable>javah</executable>
                             <arguments>
                                 <argument>-d</argument>
                                 <argument>target/c/gen</argument>
                                 <argument>-classpath</argument>
                                 <argument>src/main/java</argument>
-                                <argument>com.akolov.notipy.Notipy_linux</argument>
+                                <argument>com.akolov.notipy.linux.Notipy_linux</argument>
                             </arguments>
                         </configuration>
                     </execution>
