@@ -26,7 +26,7 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
-            
+
         </plugins>
     </build>
 
@@ -96,7 +96,7 @@
                                         <argument>-Itarget/c/gen</argument>
                                         <argument>-O3</argument>
                                         <argument>-Wall</argument>
-                                        <argument>-Werror</argument>
+                                        <!--argument>-Werror</argument-->
                                         <argument>-c</argument>
                                         <argument>-fmessage-length=0</argument>
                                         <argument>-fPIC</argument>
