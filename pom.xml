@@ -102,9 +102,25 @@
                                         <argument>-fPIC</argument>
                                         <argument>-MMD</argument>
                                         <argument>-MP</argument>
-                                        <argument>-MTnotify.d</argument>
-                                        <argument>-onotipy.o</argument>
+                                        <!--argument>-MTnotify.d</argument-->
+                                        <argument>-otarget/c/notipy.o</argument>
                                         <argument>src/main/c/notipy.c</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>link-gcc</id>
+                                <phase>process-sources</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+
+                                <configuration>
+                                    <executable>gcc</executable>
+                                    <arguments>
+                                        <argument>-shared</argument>
+                                        <argument>-otarget/c/notipy.so</argument>
+                                        <argument>target/c/notipy.o</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
