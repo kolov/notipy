@@ -32,7 +32,7 @@
 
 
  
-#include "notipy.h"
+#include "com_akolov_notipy_linux_Notipy_linux.h"
 #include <sys/time.h>
 #include <sys/select.h>
 #include <sys/ioctl.h>
