@@ -102,7 +102,7 @@
                                         <argument>-fPIC</argument>
                                         <argument>-MMD</argument>
                                         <argument>-MP</argument>
-                                        <!--argument>-MT"$(@:%.o=%.d)"</argument-->
+                                        <argument>-MTnotify.d</argument>
                                         <argument>-onotipy.o</argument>
                                         <argument>src/main/c/notipy.c</argument>
                                     </arguments>
