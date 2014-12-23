@@ -19,6 +19,7 @@ public class LibLoader {
             if (extractedLibFile.exists()) {
                 // test md5sum value
                 loadNativeLibrary(tempDir, libraryFileName);
+                return;
             }
 
             // extract file into the current directory
@@ -55,9 +56,6 @@ public class LibLoader {
 
     }
 
-    public static boolean isWindows() {
-        return System.getProperty("os.name").contains("Windows");
-    }
 
     private static void loadNativeLibrary(String path, String name) {
         File libPath = new File(path, name);
