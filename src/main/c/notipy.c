@@ -98,7 +98,7 @@ JNIEXPORT jint JNICALL Java_com_akolov_notipy_linux_Notipy_linux_1nativeRemoveWa
  * Method:    nativeNotifyLoop
  * Signature: ()V
  */
-JNIEXPORT jint JNICALL Java_com_akolov_notipy_linux_Notipy_linux_1nativeNotifyLoop
+JNIEXPORT jint JNICALL Java_com_akolov_notipy_linux_Notipy_1linux_nativeNotifyLoop
   (JNIEnv *env, jclass clazz)
 {
 	return runLoop(env, clazz);
