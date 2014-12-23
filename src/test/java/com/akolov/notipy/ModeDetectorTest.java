@@ -7,7 +7,7 @@ public class ModeDetectorTest {
 
     @Test
     public void testGetOsName() throws Exception {
-        Mode mode = new ModeDetector().getOsName();
+        Mode mode = new ModeDetector().getMode();
         Assert.assertEquals(Mode.SCAN, mode);
     }
 }

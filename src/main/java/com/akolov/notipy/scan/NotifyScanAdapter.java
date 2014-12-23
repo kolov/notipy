@@ -34,6 +34,10 @@ public class NotifyScanAdapter implements INotipyAdapter {
         public boolean subscribedToNew() {
             return (mask & Notipy.FILE_CREATED) != 0;
         }
+
+        public boolean subscribedToModify() {
+            return (mask & Notipy.FILE_MODIFIED) != 0;
+        }
     }
 
     private static class WatchDesc {
@@ -119,17 +123,26 @@ public class NotifyScanAdapter implements INotipyAdapter {
             for (Map.Entry<String, Long> entry : files.entrySet()) {
                 Long previousEntry = snapshot.files.get(entry.getKey());
                 if (previousEntry == null) {
-                    notifyNew(entry.getKey(), entry.getValue());
+                    notifyNew(entry.getKey());
+                } else if (previousEntry.longValue() != entry.getValue().longValue()) {
+                    notifyChanged(entry.getKey());
                 }
             }
-
             snapshot.files = files;
         }
 
-        private void notifyNew(String name, Long timestamp) {
+        private void notifyNew(String name) {
             for (RegisteredListener listener : listeners) {
                 if (listener.subscribedToNew()) {
                     listener.listener.fileCreated(2, name, name);
+                }
+            }
+        }
+
+        private void notifyChanged(String name) {
+            for (RegisteredListener listener : listeners) {
+                if (listener.subscribedToModify()) {
+                    listener.listener.fileModified(2, name, name);
                 }
             }
         }

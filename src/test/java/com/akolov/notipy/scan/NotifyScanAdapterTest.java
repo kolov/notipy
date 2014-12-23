@@ -1,14 +1,12 @@
 package com.akolov.notipy.scan;
 
 import com.akolov.notipy.Notipy;
-import com.akolov.notipy.NotipyListener;
+import com.akolov.notipy.TestListener;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 public class NotifyScanAdapterTest {
 
@@ -24,35 +22,15 @@ public class NotifyScanAdapterTest {
         String tempDir = System.getProperty("java.io.tmpdir");
         tempDir = tempDir.substring(0, tempDir.length() - 1);
 
-        final List<String> added = new ArrayList<>();
-        final List<String> deleted = new ArrayList<>();
-        subject.addWatch(tempDir, Notipy.FILE_ANY, false, new NotipyListener() {
-            @Override
-            public void fileCreated(int wd, String rootPath, String name) {
-                added.add(name);
-            }
 
-            @Override
-            public void fileDeleted(int wd, String rootPath, String name) {
-                deleted.add(name);
-            }
+        TestListener testListener = new TestListener();
+        subject.addWatch(tempDir, Notipy.FILE_ANY, false, testListener);
 
-            @Override
-            public void fileModified(int wd, String rootPath, String name) {
-
-            }
-
-            @Override
-            public void fileRenamed(int wd, String rootPath, String oldName, String newName) {
-
-            }
-        });
-
-        Assert.assertEquals(0, added.size());
+        Assert.assertEquals(0, testListener.getAdded().size());
 
         File file = File.createTempFile("test", "", new File(tempDir));
         file.createNewFile();
         Thread.sleep(1500);
-        Assert.assertEquals(1, added.size());
+        Assert.assertEquals(1, testListener.getAdded().size());
     }
 }

@@ -5,34 +5,28 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-/**
- * Hello world!
- */
+
 public class LibLoader {
-    public static void main(String[] args) {
-        System.out.println("Hello World!");
-    }
 
+    public static void extractAndLoadLibraryFile(String libraryFileName, boolean doChmod) {
+        String nativeLibraryResourcePath = "/" + libraryFileName;
+        String tempDir = System.getProperty("java.io.tmpdir");
 
-    private static boolean extractAndLoadLibraryFile(
-            String libFolderForCurrentOS, String libraryFileName,
-            String targetFolder) {
-        String nativeLibraryFilePath = libFolderForCurrentOS + "/"
-                + libraryFileName;
-        final String prefix = "javaaffinity-2-";
-
-        String extractedLibFileName = prefix + libraryFileName;
-        File extractedLibFile = new File(targetFolder, extractedLibFileName);
+        File targetFolder = new File(tempDir);
+        File extractedLibFile = new File(targetFolder, libraryFileName);
 
         try {
             if (extractedLibFile.exists()) {
                 // test md5sum value
-                return loadNativeLibrary(targetFolder, extractedLibFileName);
+                loadNativeLibrary(tempDir, libraryFileName);
             }
 
             // extract file into the current directory
             InputStream reader = LibLoader.class
-                    .getResourceAsStream(nativeLibraryFilePath);
+                    .getResourceAsStream(nativeLibraryResourcePath);
+            if (reader == null) {
+                throw new RuntimeException("Can't find resource " + nativeLibraryResourcePath);
+            }
             FileOutputStream writer = new FileOutputStream(extractedLibFile);
             byte[] buffer = new byte[1024];
             int bytesRead = 0;
@@ -43,23 +37,21 @@ public class LibLoader {
             writer.close();
             reader.close();
 
-            if (!isWindows()) {
+            if (doChmod) {
                 try {
                     Runtime.getRuntime()
                             .exec(new String[]{"chmod", "755",
                                     extractedLibFile.getAbsolutePath()})
                             .waitFor();
                 } catch (Throwable e) {
+                    throw new RuntimeException("Can't chmod " + extractedLibFile.getAbsolutePath());
                 }
             }
 
         } catch (IOException e) {
-            // TODO something with exception - don't know what to do with it
-            // using JUL
-
-            return false;
+            throw new RuntimeException(e);
         }
-        return loadNativeLibrary(targetFolder, extractedLibFileName);
+        loadNativeLibrary(tempDir, libraryFileName);
 
     }
 
@@ -67,22 +59,10 @@ public class LibLoader {
         return System.getProperty("os.name").contains("Windows");
     }
 
-    private static synchronized boolean loadNativeLibrary(String path,
-                                                          String name) {
+    private static void loadNativeLibrary(String path, String name) {
         File libPath = new File(path, name);
+        String absolutePath = libPath.getAbsolutePath();
+        System.load(absolutePath);
 
-        if (libPath.exists()) {
-            String absolutePath = libPath.getAbsolutePath();
-            try {
-                System.load(absolutePath);
-                return true;
-            } catch (UnsatisfiedLinkError e) {
-                // TODO something with e
-
-                return false;
-            }
-        } else {
-            return false;
-        }
     }
 }

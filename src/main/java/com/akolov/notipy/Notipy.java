@@ -48,9 +48,9 @@ public class Notipy {
     public static final int FILE_ANY = FILE_CREATED | FILE_DELETED | FILE_MODIFIED | FILE_RENAMED;
 
     private INotipyAdapter _instance;
-    
+
     public Notipy() {
-        Mode mode = new ModeDetector().getOsName();
+        Mode mode = new ModeDetector().getMode();
         initInMode(mode);
     }
 
@@ -64,6 +64,7 @@ public class Notipy {
                 _instance = new NotifyScanAdapter();
                 break;
             case INOTIFY:
+                LibLoader.extractAndLoadLibraryFile("notipy.so", true);
                 _instance = new JNotifyAdapterLinux();
                 break;
             default:
