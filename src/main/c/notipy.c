@@ -55,7 +55,7 @@ int remove_watch(int wd);
  * Method:    nativeInit
  * Signature: ()I
  */
-JNIEXPORT jint JNICALL Java_net_contentobjects_jnotify_linux_JNotify_1linux_nativeInit
+JNIEXPORT jint JNICALL Java_com_akolov_notipy_linux_Notipy_linux_nativeInit
   (JNIEnv *env, jclass clazz)
 {
 	return (jint)init();
@@ -66,7 +66,7 @@ JNIEXPORT jint JNICALL Java_net_contentobjects_jnotify_linux_JNotify_1linux_nati
  * Method:    nativeAddWatch
  * Signature: (Ljava/lang/String;I)I
  */
-JNIEXPORT jint JNICALL Java_net_contentobjects_jnotify_linux_JNotify_1linux_nativeAddWatch
+JNIEXPORT jint JNICALL Java_com_akolov_notipy_linux_Notipy_linux_nativeAddWatch
   (JNIEnv *env, jclass clazz, jstring path, jint mask)
 {
 	const char *str;
@@ -87,7 +87,7 @@ JNIEXPORT jint JNICALL Java_net_contentobjects_jnotify_linux_JNotify_1linux_nati
  * Method:    nativeRemoveWatch
  * Signature: (I)I
  */
-JNIEXPORT jint JNICALL Java_net_contentobjects_jnotify_linux_JNotify_1linux_nativeRemoveWatch
+JNIEXPORT jint JNICALL Java_com_akolov_notipy_linux_Notipy_linux_nativeRemoveWatch
   (JNIEnv *jni, jclass clazz, jint wd)
 {
 	return remove_watch(wd);
@@ -98,7 +98,7 @@ JNIEXPORT jint JNICALL Java_net_contentobjects_jnotify_linux_JNotify_1linux_nati
  * Method:    nativeNotifyLoop
  * Signature: ()V
  */
-JNIEXPORT jint JNICALL Java_net_contentobjects_jnotify_linux_JNotify_1linux_nativeNotifyLoop
+JNIEXPORT jint JNICALL Java_com_akolov_notipy_linux_Notipy_linux_nativeNotifyLoop
   (JNIEnv *env, jclass clazz)
 {
 	return runLoop(env, clazz);
@@ -229,7 +229,7 @@ void dispatch(JNIEnv *env, jclass clazz, struct inotify_event *event)
  * Method:    getErrorDesc
  * Signature: (J)Ljava/lang/String;
  */
-JNIEXPORT jstring JNICALL Java_net_contentobjects_jnotify_linux_JNotify_1linux_getErrorDesc
+JNIEXPORT jstring JNICALL Java_com_akolov_notipy_linux_Notipy_linux_getErrorDesc
   (JNIEnv *env, jclass clazz, jlong errorCode)
 {
 	const char* err;

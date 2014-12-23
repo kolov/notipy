@@ -35,7 +35,14 @@
             <id>pi</id>
             <build>
                 <plugins>
-
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <version>2.3.2</version>
+                        <configuration>
+                            <finalName>${project.name}-pi-${project.version}.jar</finalName>
+                        </configuration>
+                    </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-enforcer-plugin</artifactId>
@@ -134,7 +141,6 @@
                             <include>*.so</include>
                         </includes>
                     </resource>
-
                 </resources>
             </build>
         </profile>

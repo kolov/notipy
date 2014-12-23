@@ -49,10 +49,6 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 
 
-/**
- * TODO : added by omry at Dec 11, 2005 : Handle move events
- */
-
 public class JNotifyAdapterLinux implements INotipyAdapter {
     private Hashtable<Integer, Integer> _linuxWd2Wd;
     private Hashtable<Integer, WatchData> _id2Data;
