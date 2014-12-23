@@ -55,7 +55,7 @@ int remove_watch(int wd);
  * Method:    nativeInit
  * Signature: ()I
  */
-JNIEXPORT jint JNICALL Java_com_akolov_notipy_linux_Notipy_linux_nativeInit
+JNIEXPORT jint JNICALL Java_com_akolov_notipy_linux_Notipy_1linux_nativeInit
   (JNIEnv *env, jclass clazz)
 {
 	return (jint)init();
@@ -66,39 +66,39 @@ JNIEXPORT jint JNICALL Java_com_akolov_notipy_linux_Notipy_linux_nativeInit
  * Method:    nativeAddWatch
  * Signature: (Ljava/lang/String;I)I
  */
-JNIEXPORT jint JNICALL Java_com_akolov_notipy_linux_Notipy_linux_nativeAddWatch
+JNIEXPORT jint JNICALL Java_com_akolov_notipy_linux_Notipy_1linux_nativeAddWatch
   (JNIEnv *env, jclass clazz, jstring path, jint mask)
 {
 	const char *str;
     str = (*env)->GetStringUTFChars(env, path, NULL);
-    if (str == NULL) 
+    if (str == NULL)
     {
     	return -1; /* OutOfMemoryError already thrown */
     }
     // todo : ERROR HADNLING!
     int wd = add_watch((char*)str, mask);
     (*env)->ReleaseStringUTFChars(env, path, str);
-    
+
 	return wd;
-}  
+}
 
 /*
  * Class:     net_contentobjects_fshook_linux_INotify
  * Method:    nativeRemoveWatch
  * Signature: (I)I
  */
-JNIEXPORT jint JNICALL Java_com_akolov_notipy_linux_Notipy_linux_nativeRemoveWatch
+JNIEXPORT jint JNICALL Java_com_akolov_notipy_linux_Notipy_linux_1nativeRemoveWatch
   (JNIEnv *jni, jclass clazz, jint wd)
 {
 	return remove_watch(wd);
 }
-  
+
 /*
  * Class:     net_contentobjects_fshook_linux_INotify
  * Method:    nativeNotifyLoop
  * Signature: ()V
  */
-JNIEXPORT jint JNICALL Java_com_akolov_notipy_linux_Notipy_linux_nativeNotifyLoop
+JNIEXPORT jint JNICALL Java_com_akolov_notipy_linux_Notipy_linux_1nativeNotifyLoop
   (JNIEnv *env, jclass clazz)
 {
 	return runLoop(env, clazz);
@@ -122,7 +122,7 @@ int init()
 	{
 		return 0;
 	}
-	
+
     fd = inotify_init ();
     if (fd < 0)
     {
@@ -174,16 +174,16 @@ int runLoop(JNIEnv *env, jclass clazz)
 	{
 		return 1;
 	}
-	
+
 	static int BUF_LEN = 4096;
-    char buf[BUF_LEN];    
+    char buf[BUF_LEN];
     int len, i = 0;
-    
+
 	while (fd != -1)
 	{
 	    len = read (fd, buf, BUF_LEN);
-	
-	    while (i < len) 
+
+	    while (i < len)
 	    {
 	        struct inotify_event *event = (struct inotify_event *) &buf[i];
 	       	dispatch(env, clazz, event);
@@ -191,7 +191,7 @@ int runLoop(JNIEnv *env, jclass clazz)
 	    }
 	    i=0;
 	}
-	
+
 
 	return 0;
 }
@@ -208,17 +208,17 @@ void dispatch(JNIEnv *env, jclass clazz, struct inotify_event *event)
 		char nostr[] = {0};
 		name = (*env)->NewStringUTF(env, nostr);
 	}
-	
+
      jmethodID mid =   (*env)->GetStaticMethodID(env, clazz, "callbackProcessEvent", "(Ljava/lang/String;III)V");
-     if (mid == NULL) 
+     if (mid == NULL)
      {
 		 printf("callbackProcessEvent not found! \n");
 		 fflush(stdout);
          return;  /* method not found */
      }
-     
+
      (*env)->CallStaticVoidMethod(env, clazz, mid, name, event->wd, event->mask, event->cookie);
-	//callbackProcessEvent(String name, int wd, int mask, int cookie)        	
+	//callbackProcessEvent(String name, int wd, int mask, int cookie)
      // we need to delete this or Java will hold it until the thread exits
      (*env)->DeleteLocalRef(env, name);
 }
