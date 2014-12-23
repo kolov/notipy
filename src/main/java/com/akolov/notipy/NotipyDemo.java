@@ -37,13 +37,11 @@
 package com.akolov.notipy;
 
 import java.io.File;
-import java.io.IOException;
 
 
 public class NotipyDemo {
 
-
-    public static void main(String[] args) throws InterruptedException, IOException {
+    public static void main(String[] args) throws Exception {
         String dir = new File(args.length == 0 ? "." : args[0]).getCanonicalFile().getAbsolutePath();
         new Notipy().addWatch(dir, Notipy.FILE_ANY, true, new NotipyListener() {
             public void fileRenamed(int wd, String rootPath, String oldName,

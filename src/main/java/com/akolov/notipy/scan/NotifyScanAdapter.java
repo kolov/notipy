@@ -122,6 +122,8 @@ public class NotifyScanAdapter implements INotipyAdapter {
                     notifyNew(entry.getKey(), entry.getValue());
                 }
             }
+
+            snapshot.files = files;
         }
 
         private void notifyNew(String name, Long timestamp) {

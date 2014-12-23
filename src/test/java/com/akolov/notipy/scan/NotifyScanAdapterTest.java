@@ -1,5 +1,6 @@
 package com.akolov.notipy.scan;
 
+import com.akolov.notipy.Notipy;
 import com.akolov.notipy.NotipyListener;
 import org.junit.Assert;
 import org.junit.Before;
@@ -23,16 +24,17 @@ public class NotifyScanAdapterTest {
         String tempDir = System.getProperty("java.io.tmpdir");
         tempDir = tempDir.substring(0, tempDir.length() - 1);
 
-        final List<String> l = new ArrayList<>();
-        subject.addWatch(tempDir, 2, false, new NotipyListener() {
+        final List<String> added = new ArrayList<>();
+        final List<String> deleted = new ArrayList<>();
+        subject.addWatch(tempDir, Notipy.FILE_ANY, false, new NotipyListener() {
             @Override
             public void fileCreated(int wd, String rootPath, String name) {
-                l.add(name);
+                added.add(name);
             }
 
             @Override
             public void fileDeleted(int wd, String rootPath, String name) {
-
+                deleted.add(name);
             }
 
             @Override
@@ -46,11 +48,11 @@ public class NotifyScanAdapterTest {
             }
         });
 
-        Assert.assertEquals(0, l.size());
+        Assert.assertEquals(0, added.size());
 
         File file = File.createTempFile("test", "", new File(tempDir));
         file.createNewFile();
         Thread.sleep(1500);
-        Assert.assertEquals(1, l.size());
+        Assert.assertEquals(1, added.size());
     }
 }
