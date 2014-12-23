@@ -6,10 +6,10 @@ import java.util.List;
 
 public class TestListener implements NotipyListener {
 
-    private List<String> added = new ArrayList<>();
-    private List<String> deleted = new ArrayList<>();
-    private List<String> modified = new ArrayList<>();
-    private List<String> renamed = new ArrayList<>();
+    private List<String> added = new ArrayList();
+    private List<String> deleted = new ArrayList();
+    private List<String> modified = new ArrayList();
+    private List<String> renamed = new ArrayList();
 
     @Override
     public void fileCreated(int wd, String rootPath, String name) {

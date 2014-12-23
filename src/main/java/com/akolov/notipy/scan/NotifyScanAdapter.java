@@ -15,7 +15,7 @@ import java.util.Map;
 public class NotifyScanAdapter implements INotipyAdapter {
 
     private static int counter = 0;
-    private Map<WatchDesc, WatchersGroup> listeners = new HashMap<>();
+    private Map<WatchDesc, WatchersGroup> listeners = new HashMap();
 
     private static class RegisteredListener {
         public NotipyListener listener;
@@ -54,7 +54,7 @@ public class NotifyScanAdapter implements INotipyAdapter {
 
     private static class WatcherSnapshot {
 
-        private Map<String, Long> files = new HashMap<>();
+        private Map<String, Long> files = new HashMap();
 
         public WatcherSnapshot(Map<String, Long> files) {
             this.files = files;
@@ -78,7 +78,7 @@ public class NotifyScanAdapter implements INotipyAdapter {
     }
 
     private static Map<String, Long> getFilesInFolder(final File folder, boolean nested) {
-        Map<String, Long> files = new HashMap<>();
+        Map<String, Long> files = new HashMap();
         for (final File fileEntry : folder.listFiles()) {
             if (fileEntry.isDirectory() && nested) {
                 listFilesForFolder(fileEntry, nested, files);
@@ -96,7 +96,7 @@ public class NotifyScanAdapter implements INotipyAdapter {
 
         public WatchersGroup(final String path, final boolean watchSubtree) {
             snapshot = WatcherSnapshot.fromFolder(path, watchSubtree);
-            listeners = new ArrayList<>();
+            listeners = new ArrayList();
             new Thread(new Runnable() {
                 @Override
                 public void run() {
