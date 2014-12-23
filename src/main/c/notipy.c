@@ -87,7 +87,7 @@ JNIEXPORT jint JNICALL Java_com_akolov_notipy_linux_Notipy_1linux_nativeAddWatch
  * Method:    nativeRemoveWatch
  * Signature: (I)I
  */
-JNIEXPORT jint JNICALL Java_com_akolov_notipy_linux_Notipy_linux_1nativeRemoveWatch
+JNIEXPORT jint JNICALL Java_com_akolov_notipy_linux_Notipy_1linux_nativeRemoveWatch
   (JNIEnv *jni, jclass clazz, jint wd)
 {
 	return remove_watch(wd);
