@@ -45,12 +45,21 @@ public class Notipy_linux {
     public static boolean WARN = true;
 
     static {
-        //Util.loadNativeLibrary();
         int res = nativeInit();
         if (res != 0) {
             throw new RuntimeException("Error initializing fshook_inotify library. linux error code #" + res + ", man errno for more info");
         }
         init();
+    }
+
+    private static void init() {
+        Thread thread = new Thread("INotify thread") {
+            public void run() {
+                int n = nativeNotifyLoop();
+            }
+        };
+        thread.setDaemon(true);
+        thread.start();
     }
 
     /* the following are legal, implemented events that user-space can watch for */
@@ -122,16 +131,6 @@ public class Notipy_linux {
         if (ret != 0) {
             throw new NotipyException_linux("Error removing watch " + wd, ret);
         }
-    }
-
-    private static void init() {
-        Thread thread = new Thread("INotify thread") {
-            public void run() {
-                nativeNotifyLoop();
-            }
-        };
-        thread.setDaemon(true);
-        thread.start();
     }
 
 
