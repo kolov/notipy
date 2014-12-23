@@ -62,7 +62,9 @@ public class LibLoader {
     private static void loadNativeLibrary(String path, String name) {
         File libPath = new File(path, name);
         String absolutePath = libPath.getAbsolutePath();
+        System.out.println("Loading " + absolutePath);
         System.load(absolutePath);
+        System.out.println("Loaded " + absolutePath);
 
     }
 }
