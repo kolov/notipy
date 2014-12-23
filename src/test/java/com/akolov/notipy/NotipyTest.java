@@ -8,15 +8,12 @@ import java.io.File;
 public class NotipyTest {
 
 
-
     private Notipy subject = new Notipy();
 
     @Test
     public void testAddWatch() throws Exception {
 
         String tempDir = System.getProperty("java.io.tmpdir");
-        tempDir = tempDir.substring(0, tempDir.length() - 1);
-
 
         TestListener testListener = new TestListener();
         subject.addWatch(tempDir, Notipy.FILE_ANY, false, testListener);
