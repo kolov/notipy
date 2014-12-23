@@ -37,10 +37,10 @@
 package com.akolov.notipy;
 
 
-public interface INotipy {
+public interface INotipyAdapter {
     public String addWatch(String path, int mask, boolean watchSubtree, NotipyListener listener) throws
-            JNotifyException;
+            NotipyException;
 
-    public boolean removeWatch(String wd) throws JNotifyException;
+    public boolean removeWatch(String wd) throws NotipyException;
 
 }

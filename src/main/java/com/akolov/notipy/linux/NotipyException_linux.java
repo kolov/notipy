@@ -1,8 +1,8 @@
 package com.akolov.notipy.linux;
 
-import com.akolov.notipy.JNotifyException;
+import com.akolov.notipy.NotipyException;
 
-public class JNotifyException_linux extends JNotifyException
+public class NotipyException_linux extends NotipyException
 {
 	private static final long serialVersionUID = 1L;
 
@@ -10,7 +10,7 @@ public class JNotifyException_linux extends JNotifyException
 	private static final int LINUX_PERMISSION_DENIED = 13;
 	private static final int LINUX_NO_SPACE_LEFT_ON_DEVICE = 28;
 
-	public JNotifyException_linux(String s, int systemErrorCode)
+	public NotipyException_linux(String s, int systemErrorCode)
 	{
 		super(s, systemErrorCode);
 	}

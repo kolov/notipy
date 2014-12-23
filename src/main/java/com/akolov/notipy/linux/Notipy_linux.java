@@ -38,7 +38,7 @@ package com.akolov.notipy.linux;
 
 
 import com.akolov.notipy.INotifyListener;
-import com.akolov.notipy.JNotifyException;
+import com.akolov.notipy.NotipyException;
 
 public class Notipy_linux
 {
@@ -108,12 +108,12 @@ public class Notipy_linux
 	private static native String getErrorDesc(long errorCode);
 	
 	
-	public static int addWatch(String path, int mask) throws JNotifyException
+	public static int addWatch(String path, int mask) throws NotipyException
 	{
 		int wd = nativeAddWatch(path, mask);
 		if (wd < 0)
 		{
-			throw new JNotifyException_linux("Error watching " + path + " : " + getErrorDesc(-wd), -wd);
+			throw new NotipyException_linux("Error watching " + path + " : " + getErrorDesc(-wd), -wd);
 		}
 		
 		debug(wd + " = JNotify_linux.addWatch("+ path + "," + getMaskDesc(mask)+ ")");
@@ -121,13 +121,13 @@ public class Notipy_linux
 		return wd;
 	}
 
-	public static void removeWatch(int wd) throws JNotifyException
+	public static void removeWatch(int wd) throws NotipyException
 	{
 		int ret = nativeRemoveWatch(wd);
 		debug(ret + " = JNotify_linux.removeWatch("+ wd + ")");
 		if (ret != 0)
 		{
-			throw new JNotifyException_linux("Error removing watch " + wd, ret);
+			throw new NotipyException_linux("Error removing watch " + wd, ret);
 		}
 	}
 	

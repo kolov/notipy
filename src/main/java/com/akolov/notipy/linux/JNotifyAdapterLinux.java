@@ -39,11 +39,10 @@ package com.akolov.notipy.linux;
 
 
 import com.akolov.notipy.INotifyListener;
-import com.akolov.notipy.INotipy;
-import com.akolov.notipy.JNotifyException;
+import com.akolov.notipy.INotipyAdapter;
+import com.akolov.notipy.NotipyException;
 import com.akolov.notipy.Notipy;
 import com.akolov.notipy.NotipyListener;
-import com.akolov.notipy.linux.Notipy_linux;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -54,7 +53,7 @@ import java.util.Hashtable;
  * TODO : added by omry at Dec 11, 2005 : Handle move events
  */
 
-public class JNotifyAdapterLinux implements INotipy {
+public class JNotifyAdapterLinux implements INotipyAdapter {
     private Hashtable<Integer, Integer> _linuxWd2Wd;
     private Hashtable<Integer, WatchData> _id2Data;
 
@@ -81,7 +80,7 @@ public class JNotifyAdapterLinux implements INotipy {
     }
 
     public String addWatch(String path, int mask, boolean watchSubtree, NotipyListener listener)
-            throws JNotifyException {
+            throws NotipyException {
 
 
         // map mask to linux inotify mask.
@@ -114,7 +113,7 @@ public class JNotifyAdapterLinux implements INotipy {
             try {
                 File file = new File(path);
                 registerToSubTree(true, watchData, file, false);
-            } catch (JNotifyException e) {
+            } catch (NotipyException e) {
                 // cleanup
                 removeWatch(Integer.toString(watchData._wd));
                 // and throw.
@@ -124,7 +123,7 @@ public class JNotifyAdapterLinux implements INotipy {
         return Integer.toString(watchData._wd);
     }
 
-    private WatchData createWatch(WatchData parentWatchData, boolean user, File path, int mask, int linuxMask, boolean watchSubtree, NotipyListener listener) throws JNotifyException {
+    private WatchData createWatch(WatchData parentWatchData, boolean user, File path, int mask, int linuxMask, boolean watchSubtree, NotipyListener listener) throws NotipyException {
         String absPath = path.getPath();
         int wd = _watchIDCounter++;
         int linuxWd = Notipy_linux.addWatch(absPath, linuxMask);
@@ -138,7 +137,7 @@ public class JNotifyAdapterLinux implements INotipy {
     }
 
 
-    private void registerToSubTree(boolean isRoot, WatchData parentWatch, File root, boolean fireCreatedEvents) throws JNotifyException {
+    private void registerToSubTree(boolean isRoot, WatchData parentWatch, File root, boolean fireCreatedEvents) throws NotipyException {
         if (!parentWatch._user) {
             throw new RuntimeException("!parentWatch._user");
         }
@@ -157,8 +156,8 @@ public class JNotifyAdapterLinux implements INotipy {
             if (!isRoot) {
                 try {
                     createWatch(parentWatch, false, root, parentWatch._mask, parentWatch._linuxMask, parentWatch._watchSubtree, parentWatch._listener);
-                } catch (JNotifyException e) {
-                    if (e.getErrorCode() == JNotifyException.ERROR_WATCH_LIMIT_REACHED)
+                } catch (NotipyException e) {
+                    if (e.getErrorCode() == NotipyException.ERROR_WATCH_LIMIT_REACHED)
                         Notipy_linux.warn("JNotifyAdapterLinux.registerToSubTree : warning, failed to register " + root + " :" + e.getMessage());
                     {
                         throw e;
@@ -177,7 +176,7 @@ public class JNotifyAdapterLinux implements INotipy {
         }
     }
 
-    public boolean removeWatch(String wd) throws JNotifyException {
+    public boolean removeWatch(String wd) throws NotipyException {
         Notipy_linux.debug("JNotifyAdapterLinux.removeWatch(" + wd + ")");
 
         synchronized (_id2Data) {
@@ -192,12 +191,12 @@ public class JNotifyAdapterLinux implements INotipy {
     }
 
 
-    private void unwatch(WatchData data) throws JNotifyException {
-        JNotifyException ex = null;
+    private void unwatch(WatchData data) throws NotipyException {
+        NotipyException ex = null;
         boolean ok = true;
         try {
             Notipy_linux.removeWatch(data._linuxWd);
-        } catch (JNotifyException e) {
+        } catch (NotipyException e) {
             e.printStackTrace();
             ex = e;
             ok = false;
@@ -209,7 +208,7 @@ public class JNotifyAdapterLinux implements INotipy {
                 int wd = data._subWd.get(i).intValue();
                 try {
                     Notipy_linux.removeWatch(wd);
-                } catch (JNotifyException e) {
+                } catch (NotipyException e) {
                     e.printStackTrace();
                     ex = e;
                     ok = false;
@@ -246,9 +245,9 @@ public class JNotifyAdapterLinux implements INotipy {
                             // fire events for newly found directories under the new root.
                             WatchData parent = watchData.getParentWatch();
                             registerToSubTree(true, parent, newRootFile, true);
-                        } catch (JNotifyException e) {
+                        } catch (NotipyException e) {
                             // ignore missing files while registering subtree, may have already been deleted
-                            if (e.getErrorCode() != JNotifyException.ERROR_NO_SUCH_FILE_OR_DIRECTORY)
+                            if (e.getErrorCode() != NotipyException.ERROR_NO_SUCH_FILE_OR_DIRECTORY)
                                 Notipy_linux.warn("registerToSubTree : warning, failed to register " + newRootFile + " :" + e.getMessage() + " code = " + e.getErrorCode());
                         }
                     }

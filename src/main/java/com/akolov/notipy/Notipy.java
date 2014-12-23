@@ -47,7 +47,7 @@ public class Notipy {
     public static final int FILE_RENAMED = 0x8;
     public static final int FILE_ANY = FILE_CREATED | FILE_DELETED | FILE_MODIFIED | FILE_RENAMED;
 
-    private INotipy _instance;
+    private INotipyAdapter _instance;
     
     public Notipy() {
         Mode mode = new ModeDetector().getOsName();
@@ -72,11 +72,11 @@ public class Notipy {
     }
 
     public String addWatch(String path, int mask, boolean watchSubtree, NotipyListener listener) throws
-            JNotifyException {
+            NotipyException {
         return _instance.addWatch(path, mask, watchSubtree, listener);
     }
 
-    public boolean removeWatch(String watchId) throws JNotifyException {
+    public boolean removeWatch(String watchId) throws NotipyException {
         return _instance.removeWatch(watchId);
     }
 
