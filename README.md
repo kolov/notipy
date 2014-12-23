@@ -5,8 +5,10 @@ Java library to detect file system changes that works on the Raspberry Pi (based
 
 [JNotify](http://jnotify.sourceforge.net/) didn't work ot of the box on the raspberry Pi, so this is basically a clone of JNotify with some shanges:
  - Got rid of the makefile, plain Maven build. 
+ - No separate CVS modules, on project
+ - Native Library backaged in Jar and loaded automatically
  - Doesn't detect the OS, operation mode is controlled explicitely
- - An OS-neutral ineficient implementation for developen (e.g. develop on Mac, deploy on the Pi)
+ - An OS-neutral ineficient implementation for development (e.g. develop on Mac, deploy on the Pi)
 
 Usage
 ======
@@ -30,4 +32,4 @@ This starts watching the files in the current directory.
 To select the watch implementation:
  - new Notipy() will use the scan implementation by default
  - If environment variable notipy.mode is defined, (values inotify or scan), it will ne honoured
- - Or jus creat new Notipy(Mode.INOTIFY) etc.
+ - Or jus create new Notipy(Mode.INOTIFY) etc.
