@@ -20,7 +20,6 @@ public class NotifyScanAdapterTest {
     @Test
     public void testAddWatch() throws Exception {
         String tempDir = System.getProperty("java.io.tmpdir");
-        tempDir = tempDir.substring(0, tempDir.length() - 1);
 
 
         TestListener testListener = new TestListener();
