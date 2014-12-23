@@ -1,6 +1,7 @@
 package com.akolov.notipy;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,28 +16,27 @@ public class LibLoader {
         File targetFolder = new File(tempDir);
         File extractedLibFile = new File(targetFolder, libraryFileName);
 
+
         try {
+            byte[] lib = readLibrary(nativeLibraryResourcePath);
             if (extractedLibFile.exists()) {
-                // test md5sum value
-                loadNativeLibrary(tempDir, libraryFileName);
-                return;
+                byte[] buf = new byte[(int) extractedLibFile.length()];
+                FileInputStream fis = new FileInputStream(extractedLibFile);
+                fis.read(buf);
+                if (sameBytes(buf, lib)) {
+
+                    loadNativeLibrary(tempDir, libraryFileName);
+                    return;
+                }
             }
 
             // extract file into the current directory
-            InputStream reader = LibLoader.class
-                    .getResourceAsStream(nativeLibraryResourcePath);
-            if (reader == null) {
-                throw new RuntimeException("Can't find resource " + nativeLibraryResourcePath);
-            }
+
             FileOutputStream writer = new FileOutputStream(extractedLibFile);
-            byte[] buffer = new byte[1024];
-            int bytesRead = 0;
-            while ((bytesRead = reader.read(buffer)) != -1) {
-                writer.write(buffer, 0, bytesRead);
-            }
+            writer.write(lib, 0, lib.length);
+
 
             writer.close();
-            reader.close();
 
             if (doChmod) {
                 try {
@@ -56,6 +56,34 @@ public class LibLoader {
 
     }
 
+    private static boolean sameBytes(byte[] b1, byte[] b2) {
+        if (b1.length != b2.length) {
+            return false;
+        }
+        for (int i = 0; i < b1.length; i++) {
+            if (b1[i] != b2[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    private static byte[] readLibrary(String resourcePath) throws IOException {
+        InputStream reader = LibLoader.class
+                .getResourceAsStream(resourcePath);
+        if (reader == null) {
+            throw new RuntimeException("Can't find resource " + resourcePath);
+        }
+        byte[] buffer = new byte[20000];
+        int bytesRead = 0;
+        bytesRead = reader.read(buffer);
+
+        reader.close();
+        byte[] result = new byte[bytesRead];
+        System.arraycopy(buffer, 0, result, 0, bytesRead);
+        return result;
+    }
 
     private static void loadNativeLibrary(String path, String name) {
         File libPath = new File(path, name);
