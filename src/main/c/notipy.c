@@ -83,7 +83,7 @@ JNIEXPORT jint JNICALL Java_com_akolov_notipy_linux_Notipy_1linux_nativeAddWatch
 }
 
 /*
- * Class:     net_contentobjects_fshook_linux_INotify
+ * Class:     com_akolov_notipy_linux_Notipy_linux
  * Method:    nativeRemoveWatch
  * Signature: (I)I
  */
@@ -94,9 +94,9 @@ JNIEXPORT jint JNICALL Java_com_akolov_notipy_linux_Notipy_1linux_nativeRemoveWa
 }
 
 /*
- * Class:     net_contentobjects_fshook_linux_INotify
+ * Class:     com_akolov_notipy_linux_Notipy_linux
  * Method:    nativeNotifyLoop
- * Signature: ()V
+ * Signature: ()I
  */
 JNIEXPORT jint JNICALL Java_com_akolov_notipy_linux_Notipy_1linux_nativeNotifyLoop
   (JNIEnv *env, jclass clazz)
