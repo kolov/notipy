@@ -5,7 +5,7 @@ Java library to detect file system changes that works on the Raspberry Pi (based
 
 [JNotify](http://jnotify.sourceforge.net/) didn't work ot of the box on the Raspberry Pi, so this is basically a clone of JNotify with some changes:
  - Got rid of the makefile, Maven build. 
- - No separate CVS modules, one Maven project
+ - No separate CVS modules, one github project
  - Native Library packaged in Jar and loaded automatically, no -Djava.library.path 
  - Doesn't detect the OS, operation mode is controlled explicitely
  - An OS-neutral ineficient implementation for development (e.g. develop on Mac, deploy on the Pi)
@@ -13,10 +13,10 @@ Java library to detect file system changes that works on the Raspberry Pi (based
 Usage
 ======
 
-Buld anywhere with 
+Buld the OS-neutral version anywhere with 
 
     mvn clean install
-or on the Raspberry Pi with
+or Raspbery Pi native version *on a Raspberry Pi* with
 
     mvn clean install -P pi
     
