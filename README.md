@@ -10,6 +10,10 @@ Java library to detect file system changes that works on the Raspberry Pi (based
  - Doesn't detect the OS, operation mode is controlled explicitely
  - An OS-neutral ineficient implementation for development (e.g. develop on Mac, deploy on the Pi)
 
+Why
+======
+I bought a Rapberry Pi with a camera ant I wanted to set it up do watch my aquarium while away, and the only way I found was [mjpg-streamer](http://sourceforge.net/projects/mjpg-streamer/). It works and it is nice, but it is a whole application with UI and everything, and I just wanted a component to use in my own app.
+
 Usage
 ======
 
