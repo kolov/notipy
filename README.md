@@ -41,4 +41,4 @@ To select the watch implementation:
 What about the fish?
 ======
 
-The eabb app using *notipy* to stream the Raspberry camera output is still in progress, see progect [goby](https://github.com/kolov/goby) on github. 
+The web abb app using *notipy* to stream the Raspberry camera output is still in progress, see project [goby](https://github.com/kolov/goby) on github. 
