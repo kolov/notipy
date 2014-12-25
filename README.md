@@ -37,3 +37,8 @@ To select the watch implementation:
  - new Notipy() will use the platform-independent inefficient scan implementation by default
  - If environment variable notipy.mode is defined, (values inotify or scan), it will ne honoured
  - Or pass a parameter to constructor: new Notipy(Mode.INOTIFY) etc.
+
+What about the fish?
+======
+
+The eabb app using *notipy* to stream the Raspberry camera output is still in progress, see progect [goby](https://github.com/kolov/goby) on github. 
