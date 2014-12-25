@@ -51,9 +51,14 @@ import com.akolov.notipy.NotipyListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class JNotifyAdapterLinux implements INotipyAdapter {
+
+    private static final Logger LOG = Logger.getLogger(Notipy_linux.class.getName());
+
     private Hashtable<Integer, Integer> _linuxWd2Wd;
     private Hashtable<Integer, WatchData> _id2Data;
 
@@ -167,7 +172,9 @@ public class JNotifyAdapterLinux implements INotipyAdapter {
                     createWatch(parentWatch, false, root, parentWatch._mask, parentWatch._linuxMask, parentWatch._watchSubtree, parentWatch._listener);
                 } catch (NotipyException e) {
                     if (e.getErrorCode() == NotipyException.ERROR_WATCH_LIMIT_REACHED)
-                        Notipy_linux.warn("JNotifyAdapterLinux.registerToSubTree : warning, failed to register " + root + " :" + e.getMessage());
+                        LOG.log(Level.WARNING, "JNotifyAdapterLinux.registerToSubTree : warning, failed to register "
+                                + root +
+                                " :" + e.getMessage());
                     {
                         throw e;
                     }
@@ -186,7 +193,7 @@ public class JNotifyAdapterLinux implements INotipyAdapter {
     }
 
     public boolean removeWatch(String wd) throws NotipyException {
-        Notipy_linux.debug("JNotifyAdapterLinux.removeWatch(" + wd + ")");
+        LOG.log(Level.FINE, "JNotifyAdapterLinux.removeWatch(" + wd + ")");
 
         synchronized (_id2Data) {
             if (_id2Data.containsKey(Integer.valueOf(wd))) {
@@ -231,9 +238,8 @@ public class JNotifyAdapterLinux implements INotipyAdapter {
 
     protected void notifyChangeEvent(String name, int linuxWd, int linuxMask, int cookie) {
 
-        if (Notipy_linux.DEBUG) {
-            debugLinux(name, linuxWd, linuxMask, cookie);
-        }
+
+        debugLinux(name, linuxWd, linuxMask, cookie);
 
 
         synchronized (_id2Data) {
@@ -257,7 +263,7 @@ public class JNotifyAdapterLinux implements INotipyAdapter {
                         } catch (NotipyException e) {
                             // ignore missing files while registering subtree, may have already been deleted
                             if (e.getErrorCode() != NotipyException.ERROR_NO_SUCH_FILE_OR_DIRECTORY)
-                                Notipy_linux.warn("registerToSubTree : warning, failed to register " + newRootFile + " :" + e.getMessage() + " code = " + e.getErrorCode());
+                                LOG.log(Level.WARNING, "registerToSubTree : warning, failed to register " + newRootFile + " :" + e.getMessage() + " code = " + e.getErrorCode());
                         }
                     }
 
@@ -270,7 +276,7 @@ public class JNotifyAdapterLinux implements INotipyAdapter {
                         if (!_autoWatchesPaths.contains(newRootFile.getPath())) {
                             watchData.notifyFileCreated(name);
                         } else {
-                            Notipy_linux.debug("Assuming already sent event for " + newRootFile.getPath());
+                            LOG.log(Level.FINE, "Assuming already sent event for " + newRootFile.getPath());
                         }
                     }
                 } else if ((linuxMask & Notipy_linux.IN_DELETE_SELF) != 0) {
@@ -298,37 +304,8 @@ public class JNotifyAdapterLinux implements INotipyAdapter {
     }
 
     private void debugLinux(String name, int linuxWd, int linuxMask, int cookie) {
-        boolean IN_ACCESS = (linuxMask & Notipy_linux.IN_ACCESS) != 0;
-        boolean IN_MODIFY = (linuxMask & Notipy_linux.IN_MODIFY) != 0;
-        boolean IN_ATTRIB = (linuxMask & Notipy_linux.IN_ATTRIB) != 0;
-        boolean IN_CLOSE_WRITE = (linuxMask & Notipy_linux.IN_CLOSE_WRITE) != 0;
-        boolean IN_CLOSE_NOWRITE = (linuxMask & Notipy_linux.IN_CLOSE_NOWRITE) != 0;
-        boolean IN_OPEN = (linuxMask & Notipy_linux.IN_OPEN) != 0;
-        boolean IN_MOVED_FROM = (linuxMask & Notipy_linux.IN_MOVED_FROM) != 0;
-        boolean IN_MOVED_TO = (linuxMask & Notipy_linux.IN_MOVED_TO) != 0;
-        boolean IN_CREATE = (linuxMask & Notipy_linux.IN_CREATE) != 0;
-        boolean IN_DELETE = (linuxMask & Notipy_linux.IN_DELETE) != 0;
-        boolean IN_DELETE_SELF = (linuxMask & Notipy_linux.IN_DELETE_SELF) != 0;
-        boolean IN_MOVE_SELF = (linuxMask & Notipy_linux.IN_MOVE_SELF) != 0;
-        boolean IN_UNMOUNT = (linuxMask & Notipy_linux.IN_UNMOUNT) != 0;
-        boolean IN_Q_OVERFLOW = (linuxMask & Notipy_linux.IN_Q_OVERFLOW) != 0;
-        boolean IN_IGNORED = (linuxMask & Notipy_linux.IN_IGNORED) != 0;
-        String s = "";
-        if (IN_ACCESS) s += "IN_ACCESS, ";
-        if (IN_MODIFY) s += "IN_MODIFY, ";
-        if (IN_ATTRIB) s += "IN_ATTRIB, ";
-        if (IN_CLOSE_WRITE) s += "IN_CLOSE_WRITE, ";
-        if (IN_CLOSE_NOWRITE) s += "IN_CLOSE_NOWRITE, ";
-        if (IN_OPEN) s += "IN_OPEN, ";
-        if (IN_MOVED_FROM) s += "IN_MOVED_FROM, ";
-        if (IN_MOVED_TO) s += "IN_MOVED_TO, ";
-        if (IN_CREATE) s += "IN_CREATE, ";
-        if (IN_DELETE) s += "IN_DELETE, ";
-        if (IN_DELETE_SELF) s += "IN_DELETE_SELF, ";
-        if (IN_MOVE_SELF) s += "IN_MOVE_SELF, ";
-        if (IN_UNMOUNT) s += "IN_UNMOUNT, ";
-        if (IN_Q_OVERFLOW) s += "IN_Q_OVERFLOW, ";
-        if (IN_IGNORED) s += "IN_IGNORED, ";
+
+        String s = Linux.getMaskDesc(linuxMask);
         int wd = _linuxWd2Wd.get(Integer.valueOf(linuxWd)).intValue();
         WatchData wdata = _id2Data.get(Integer.valueOf(wd));
         String path;
@@ -340,7 +317,8 @@ public class JNotifyAdapterLinux implements INotipyAdapter {
         } else {
             path = name;
         }
-        Notipy_linux.debug("Linux event : wd=" + linuxWd + " | " + s + " path: " + path + (cookie != 0 ? ", cookie=" + cookie : ""));
+        LOG.log(Level.FINE, "Linux event : wd=" + linuxWd + " | " + s + " path: " + path + (cookie != 0 ? ", cookie=" +
+                cookie : ""));
     }
 
     private static class WatchData {

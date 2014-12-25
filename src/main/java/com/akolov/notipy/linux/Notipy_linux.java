@@ -51,7 +51,6 @@ public class Notipy_linux {
 
     private static final Logger LOG = Logger.getLogger(Notipy_linux.class.getName());
 
-
     static {
         int res = nativeInit();
         if (res != 0) {
@@ -101,7 +100,6 @@ public class Notipy_linux {
     public final static int IN_ONESHOT = 0x80000000; /* only send event once */
 
 
-
     private static INotifyListener _notifyListener;
 
     private static native int nativeInit();
@@ -121,7 +119,7 @@ public class Notipy_linux {
             throw new NotipyException_linux("Error watching " + path + " : " + getErrorDesc(-wd), -wd);
         }
 
-        LOG.log(Level.FINE, wd + " = JNotify_linux.addWatch(" + path + "," + getMaskDesc(mask) + ")");
+        LOG.log(Level.FINE, wd + " = JNotify_linux.addWatch(" + path + "," + Linux.getMaskDesc(mask) + ")");
 
         return wd;
     }
@@ -136,7 +134,8 @@ public class Notipy_linux {
 
 
     static void callbackProcessEvent(String name, int wd, int mask, int cookie) {
-        LOG.log(Level.FINE, "JNotify.event(name=" + name + ", wd=" + wd + ", " + getMaskDesc(mask) + (cookie != 0 ? ", cookie=" + cookie : "") + ")");
+        LOG.log(Level.FINE, "JNotify.event(name=" + name + ", wd=" + wd + ", " + Linux.getMaskDesc(mask) + (cookie !=
+                0 ? ", cookie=" + cookie : "") + ")");
 
         if (_notifyListener != null) {
             _notifyListener.notify(name, wd, mask, cookie);
@@ -149,38 +148,6 @@ public class Notipy_linux {
         } else {
             throw new RuntimeException("Notify listener is already set. multiple notify listeners are not supported.");
         }
-    }
-
-    private static String getMaskDesc(int linuxMask) {
-
-        String s = "";
-        s += appendIf(linuxMask, s, Notipy_linux.IN_ACCESS, "IN_ACCESS");
-        s += appendIf(linuxMask, s, Notipy_linux.IN_MODIFY, "IN_MODIFY");
-        s += appendIf(linuxMask, s, Notipy_linux.IN_ATTRIB, "IN_ATTRIB");
-        s += appendIf(linuxMask, s, Notipy_linux.IN_CLOSE_WRITE, "IN_CLOSE_WRITE");
-        s += appendIf(linuxMask, s, Notipy_linux.IN_CLOSE_NOWRITE, "IN_CLOSE_NOWRITE");
-        s += appendIf(linuxMask, s, Notipy_linux.IN_OPEN, "IN_OPEN");
-        s += appendIf(linuxMask, s, Notipy_linux.IN_MOVED_FROM, "IN_MOVED_FROM");
-        s += appendIf(linuxMask, s, Notipy_linux.IN_MOVED_TO, "IN_MOVED_TO");
-        s += appendIf(linuxMask, s, Notipy_linux.IN_CREATE, "IN_CREATE");
-        s += appendIf(linuxMask, s, Notipy_linux.IN_DELETE, "IN_DELETE");
-        s += appendIf(linuxMask, s, Notipy_linux.IN_DELETE_SELF, "IN_DELETE_SELF");
-        s += appendIf(linuxMask, s, Notipy_linux.IN_MOVE_SELF, "IN_MOVE_SELF");
-        s += appendIf(linuxMask, s, Notipy_linux.IN_UNMOUNT, "IN_ACCESS");
-        s += appendIf(linuxMask, s, Notipy_linux.IN_Q_OVERFLOW, "IN_Q_OVERFLOW");
-        s += appendIf(linuxMask, s, Notipy_linux.IN_IGNORED, "IN_IGNORED");
-
-        return s;
-    }
-
-    private static String appendIf(int linuxMask, String s, int flag, String text) {
-        if ((flag & linuxMask) != 0) {
-            if (s.length() > 0) {
-                s = s + " | ";
-            }
-            return s + text;
-        }
-        return s;
     }
 
 
