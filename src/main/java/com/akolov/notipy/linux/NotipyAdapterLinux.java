@@ -43,7 +43,7 @@ package com.akolov.notipy.linux;
 
 
 import com.akolov.notipy.INotifyListener;
-import com.akolov.notipy.INotipyAdapter;
+import com.akolov.notipy.NotipyAdapter;
 import com.akolov.notipy.NotipyException;
 import com.akolov.notipy.Notipy;
 import com.akolov.notipy.NotipyListener;
@@ -55,7 +55,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-public class JNotifyAdapterLinux implements INotipyAdapter {
+public class NotipyAdapterLinux implements NotipyAdapter {
 
     private static final Logger LOG = Logger.getLogger(Notipy_linux.class.getName());
 
@@ -68,7 +68,7 @@ public class JNotifyAdapterLinux implements INotipyAdapter {
     private Hashtable<String, String> _autoWatchesPaths;
     private static int _watchIDCounter = 0;
 
-    public JNotifyAdapterLinux() {
+    public NotipyAdapterLinux() {
         Notipy_linux.setNotifyListener(new INotifyListener() {
             public void notify(String name, int wd, int mask, int cookie) {
                 try {
@@ -91,26 +91,26 @@ public class JNotifyAdapterLinux implements INotipyAdapter {
         // map mask to linux inotify mask.
         int linuxMask = 0;
         if ((mask & Notipy.FILE_CREATED) != 0) {
-            linuxMask |= Notipy_linux.IN_CREATE;
+            linuxMask |= Linux.IN_CREATE;
         }
         if ((mask & Notipy.FILE_DELETED) != 0) {
-            linuxMask |= Notipy_linux.IN_DELETE;
-            linuxMask |= Notipy_linux.IN_DELETE_SELF;
+            linuxMask |= Linux.IN_DELETE;
+            linuxMask |= Linux.IN_DELETE_SELF;
         }
         if ((mask & Notipy.FILE_MODIFIED) != 0) {
-            linuxMask |= Notipy_linux.IN_ATTRIB;
-            linuxMask |= Notipy_linux.IN_MODIFY;
+            linuxMask |= Linux.IN_ATTRIB;
+            linuxMask |= Linux.IN_MODIFY;
         }
         if ((mask & Notipy.FILE_RENAMED) != 0) {
-            linuxMask |= Notipy_linux.IN_MOVED_FROM;
-            linuxMask |= Notipy_linux.IN_MOVED_TO;
+            linuxMask |= Linux.IN_MOVED_FROM;
+            linuxMask |= Linux.IN_MOVED_TO;
         }
 
         // if watching subdirs, listen on create anyway.
         // to know when new sub directories are created.
         // these events should not reach the client code.
         if (watchSubtree) {
-            linuxMask |= Notipy_linux.IN_CREATE;
+            linuxMask |= Linux.IN_CREATE;
         }
 
         WatchData watchData = createWatch(null, true, new File(path), mask, linuxMask, watchSubtree, listener);
@@ -252,7 +252,7 @@ public class JNotifyAdapterLinux implements INotipyAdapter {
 
             WatchData watchData = _id2Data.get(iwd);
             if (watchData != null) {
-                if ((linuxMask & Notipy_linux.IN_CREATE) != 0) {
+                if ((linuxMask & Linux.IN_CREATE) != 0) {
                     File newRootFile = new File(watchData._path, name);
                     if (watchData._watchSubtree) {
                         try {
@@ -279,17 +279,17 @@ public class JNotifyAdapterLinux implements INotipyAdapter {
                             LOG.log(Level.FINE, "Assuming already sent event for " + newRootFile.getPath());
                         }
                     }
-                } else if ((linuxMask & Notipy_linux.IN_DELETE_SELF) != 0) {
+                } else if ((linuxMask & Linux.IN_DELETE_SELF) != 0) {
                     watchData.notifyFileDeleted(name);
-                } else if ((linuxMask & Notipy_linux.IN_DELETE) != 0) {
+                } else if ((linuxMask & Linux.IN_DELETE) != 0) {
                     watchData.notifyFileDeleted(name);
-                } else if ((linuxMask & Notipy_linux.IN_ATTRIB) != 0 || (linuxMask & Notipy_linux.IN_MODIFY) != 0) {
+                } else if ((linuxMask & Linux.IN_ATTRIB) != 0 || (linuxMask & Linux.IN_MODIFY) != 0) {
                     watchData.notifyFileModified(name);
-                } else if ((linuxMask & Notipy_linux.IN_MOVED_FROM) != 0) {
+                } else if ((linuxMask & Linux.IN_MOVED_FROM) != 0) {
                     watchData.renaming(cookie, name);
-                } else if ((linuxMask & Notipy_linux.IN_MOVED_TO) != 0) {
+                } else if ((linuxMask & Linux.IN_MOVED_TO) != 0) {
                     watchData.notifyFileRenamed(name, cookie);
-                } else if ((linuxMask & Notipy_linux.IN_IGNORED) != 0) {
+                } else if ((linuxMask & Linux.IN_IGNORED) != 0) {
                     _linuxWd2Wd.remove(Integer.valueOf(watchData._linuxWd));
                     _id2Data.remove(Integer.valueOf(watchData._wd));
                     if (!watchData._user) {

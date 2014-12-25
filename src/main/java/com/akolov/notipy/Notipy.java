@@ -36,7 +36,7 @@
 
 package com.akolov.notipy;
 
-import com.akolov.notipy.linux.JNotifyAdapterLinux;
+import com.akolov.notipy.linux.NotipyAdapterLinux;
 import com.akolov.notipy.scan.NotifyScanAdapter;
 
 
@@ -47,7 +47,7 @@ public class Notipy {
     public static final int FILE_RENAMED = 0x8;
     public static final int FILE_ANY = FILE_CREATED | FILE_DELETED | FILE_MODIFIED | FILE_RENAMED;
 
-    private INotipyAdapter _instance;
+    private NotipyAdapter _instance;
 
     public Notipy() {
         Mode mode = new ModeDetector().getMode();
@@ -65,7 +65,7 @@ public class Notipy {
                 break;
             case INOTIFY:
                 LibLoader.extractAndLoadLibraryFile("notipy.so", true);
-                _instance = new JNotifyAdapterLinux();
+                _instance = new NotipyAdapterLinux();
                 break;
             default:
                 throw new RuntimeException("Unexpected");

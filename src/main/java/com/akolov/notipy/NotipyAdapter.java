@@ -41,7 +41,7 @@
 package com.akolov.notipy;
 
 
-public interface INotipyAdapter {
+public interface NotipyAdapter {
     public String addWatch(String path, int mask, boolean watchSubtree, NotipyListener listener) throws
             NotipyException;
 

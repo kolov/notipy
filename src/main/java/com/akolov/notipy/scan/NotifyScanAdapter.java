@@ -1,8 +1,8 @@
 package com.akolov.notipy.scan;
 
 
-import com.akolov.notipy.INotipyAdapter;
 import com.akolov.notipy.Notipy;
+import com.akolov.notipy.NotipyAdapter;
 import com.akolov.notipy.NotipyException;
 import com.akolov.notipy.NotipyListener;
 
@@ -11,8 +11,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class NotifyScanAdapter implements INotipyAdapter {
+public class NotifyScanAdapter implements NotipyAdapter {
+
+    private static final Logger LOG = Logger.getLogger(NotifyScanAdapter.class.getName());
 
     private static int counter = 0;
     private Map<WatchDesc, WatchersGroup> listeners = new HashMap();
@@ -152,6 +156,8 @@ public class NotifyScanAdapter implements INotipyAdapter {
     @Override
     public synchronized String addWatch(String path, int mask, boolean watchSubtree, NotipyListener listener) throws
             NotipyException {
+
+        LOG.log(Level.FINE, "addWatch");
         File folder = new File(path);
 
         if (!folder.isDirectory()) {
