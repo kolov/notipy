@@ -1,4 +1,8 @@
 /*******************************************************************************
+ * Notipy - distibuted under LGPL 3.0
+ * Based on JNotify, see original copiright notice below
+ *
+ *******************************************************************************
  * JNotify - Allow java applications to register to File system events.
  *
  * Copyright (C) 2005 - Content Objects
@@ -40,9 +44,13 @@ package com.akolov.notipy.linux;
 import com.akolov.notipy.INotifyListener;
 import com.akolov.notipy.NotipyException;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class Notipy_linux {
-    static final boolean DEBUG = false;
-    public static boolean WARN = true;
+
+    private static final Logger LOG = Logger.getLogger(Notipy_linux.class.getName());
+
 
     static {
         int res = nativeInit();
@@ -92,13 +100,6 @@ public class Notipy_linux {
 													 */
     public final static int IN_ONESHOT = 0x80000000; /* only send event once */
 
-    /*
-     * All of the events - we build the list by hand so that we can add flags in
-     * the future and not break backward compatibility. Apps will get only the
-     * events that they originally wanted. Be sure to add new events here!
-     */
-    public final static int IN_ALL_EVENT = (IN_ACCESS | IN_MODIFY | IN_ATTRIB | IN_CLOSE_WRITE
-            | IN_CLOSE_NOWRITE | IN_OPEN | IN_MOVED_FROM | IN_MOVED_TO | IN_DELETE | IN_CREATE | IN_DELETE_SELF);
 
 
     private static INotifyListener _notifyListener;
@@ -120,14 +121,14 @@ public class Notipy_linux {
             throw new NotipyException_linux("Error watching " + path + " : " + getErrorDesc(-wd), -wd);
         }
 
-        debug(wd + " = JNotify_linux.addWatch(" + path + "," + getMaskDesc(mask) + ")");
+        LOG.log(Level.FINE, wd + " = JNotify_linux.addWatch(" + path + "," + getMaskDesc(mask) + ")");
 
         return wd;
     }
 
     public static void removeWatch(int wd) throws NotipyException {
         int ret = nativeRemoveWatch(wd);
-        debug(ret + " = JNotify_linux.removeWatch(" + wd + ")");
+        LOG.log(Level.FINE, ret + " = JNotify_linux.removeWatch(" + wd + ")");
         if (ret != 0) {
             throw new NotipyException_linux("Error removing watch " + wd, ret);
         }
@@ -135,7 +136,7 @@ public class Notipy_linux {
 
 
     static void callbackProcessEvent(String name, int wd, int mask, int cookie) {
-        debug("JNotify.event(name=" + name + ", wd=" + wd + ", " + getMaskDesc(mask) + (cookie != 0 ? ", cookie=" + cookie : "") + ")");
+        LOG.log(Level.FINE, "JNotify.event(name=" + name + ", wd=" + wd + ", " + getMaskDesc(mask) + (cookie != 0 ? ", cookie=" + cookie : "") + ")");
 
         if (_notifyListener != null) {
             _notifyListener.notify(name, wd, mask, cookie);
@@ -151,51 +152,35 @@ public class Notipy_linux {
     }
 
     private static String getMaskDesc(int linuxMask) {
-        boolean lIN_ACCESS = (linuxMask & Notipy_linux.IN_ACCESS) != 0;
-        boolean lIN_MODIFY = (linuxMask & Notipy_linux.IN_MODIFY) != 0;
-        boolean lIN_ATTRIB = (linuxMask & Notipy_linux.IN_ATTRIB) != 0;
-        boolean lIN_CLOSE_WRITE = (linuxMask & Notipy_linux.IN_CLOSE_WRITE) != 0;
-        boolean lIN_CLOSE_NOWRITE = (linuxMask & Notipy_linux.IN_CLOSE_NOWRITE) != 0;
-        boolean lIN_OPEN = (linuxMask & Notipy_linux.IN_OPEN) != 0;
-        boolean lIN_MOVED_FROM = (linuxMask & Notipy_linux.IN_MOVED_FROM) != 0;
-        boolean lIN_MOVED_TO = (linuxMask & Notipy_linux.IN_MOVED_TO) != 0;
-        boolean lIN_CREATE = (linuxMask & Notipy_linux.IN_CREATE) != 0;
-        boolean lIN_DELETE = (linuxMask & Notipy_linux.IN_DELETE) != 0;
-        boolean lIN_DELETE_SELF = (linuxMask & Notipy_linux.IN_DELETE_SELF) != 0;
-        boolean lIN_MOVE_SELF = (linuxMask & Notipy_linux.IN_MOVE_SELF) != 0;
-        boolean lIN_UNMOUNT = (linuxMask & Notipy_linux.IN_UNMOUNT) != 0;
-        boolean lIN_Q_OVERFLOW = (linuxMask & Notipy_linux.IN_Q_OVERFLOW) != 0;
-        boolean lIN_IGNORED = (linuxMask & Notipy_linux.IN_IGNORED) != 0;
+
         String s = "";
-        if (lIN_ACCESS) s += "IN_ACCESS|";
-        if (lIN_MODIFY) s += "IN_MODIFY|";
-        if (lIN_ATTRIB) s += "IN_ATTRIB|";
-        if (lIN_CLOSE_WRITE) s += "IN_CLOSE_WRITE|";
-        if (lIN_CLOSE_NOWRITE) s += "IN_CLOSE_NOWRITE|";
-        if (lIN_OPEN) s += "IN_OPEN|";
-        if (lIN_MOVED_FROM) s += "IN_MOVED_FROM|";
-        if (lIN_MOVED_TO) s += "IN_MOVED_TO|";
-        if (lIN_CREATE) s += "IN_CREATE|";
-        if (lIN_DELETE) s += "IN_DELETE|";
-        if (lIN_DELETE_SELF) s += "IN_DELETE_SELF|";
-        if (lIN_MOVE_SELF) s += "IN_MOVE_SELF|";
-        if (lIN_UNMOUNT) s += "IN_UNMOUNT|";
-        if (lIN_Q_OVERFLOW) s += "IN_Q_OVERFLOW|";
-        if (lIN_IGNORED) s += "IN_IGNORED|";
+        s += appendIf(linuxMask, s, Notipy_linux.IN_ACCESS, "IN_ACCESS");
+        s += appendIf(linuxMask, s, Notipy_linux.IN_MODIFY, "IN_MODIFY");
+        s += appendIf(linuxMask, s, Notipy_linux.IN_ATTRIB, "IN_ATTRIB");
+        s += appendIf(linuxMask, s, Notipy_linux.IN_CLOSE_WRITE, "IN_CLOSE_WRITE");
+        s += appendIf(linuxMask, s, Notipy_linux.IN_CLOSE_NOWRITE, "IN_CLOSE_NOWRITE");
+        s += appendIf(linuxMask, s, Notipy_linux.IN_OPEN, "IN_OPEN");
+        s += appendIf(linuxMask, s, Notipy_linux.IN_MOVED_FROM, "IN_MOVED_FROM");
+        s += appendIf(linuxMask, s, Notipy_linux.IN_MOVED_TO, "IN_MOVED_TO");
+        s += appendIf(linuxMask, s, Notipy_linux.IN_CREATE, "IN_CREATE");
+        s += appendIf(linuxMask, s, Notipy_linux.IN_DELETE, "IN_DELETE");
+        s += appendIf(linuxMask, s, Notipy_linux.IN_DELETE_SELF, "IN_DELETE_SELF");
+        s += appendIf(linuxMask, s, Notipy_linux.IN_MOVE_SELF, "IN_MOVE_SELF");
+        s += appendIf(linuxMask, s, Notipy_linux.IN_UNMOUNT, "IN_ACCESS");
+        s += appendIf(linuxMask, s, Notipy_linux.IN_Q_OVERFLOW, "IN_Q_OVERFLOW");
+        s += appendIf(linuxMask, s, Notipy_linux.IN_IGNORED, "IN_IGNORED");
+
         return s;
     }
 
-
-    static void debug(String msg) {
-        if (DEBUG) {
-            System.out.println(msg);
+    private static String appendIf(int linuxMask, String s, int flag, String text) {
+        if ((flag & linuxMask) != 0) {
+            if (s.length() > 0) {
+                s = s + " | ";
+            }
+            return s + text;
         }
-    }
-
-    public static void warn(String warning) {
-        if (WARN) {
-            System.err.println(warning);
-        }
+        return s;
     }
 
 

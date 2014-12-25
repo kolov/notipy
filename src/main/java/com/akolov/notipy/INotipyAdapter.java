@@ -1,4 +1,8 @@
 /*******************************************************************************
+ * Notipy - distibuted under LGPL 3.0
+ * Based on JNotify, see original copiright notice below
+ *
+ *******************************************************************************
  * JNotify - Allow java applications to register to File system events.
  *
  * Copyright (C) 2005 - Content Objects

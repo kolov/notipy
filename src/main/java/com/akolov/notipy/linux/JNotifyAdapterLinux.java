@@ -1,4 +1,8 @@
 /*******************************************************************************
+ * Notipy - distibuted under LGPL 3.0
+ * Based on JNotify, see original copiright notice below
+ *
+ *******************************************************************************
  * JNotify - Allow java applications to register to File system events.
  *
  * Copyright (C) 2005 - Content Objects
@@ -119,7 +123,13 @@ public class JNotifyAdapterLinux implements INotipyAdapter {
         return Integer.toString(watchData._wd);
     }
 
-    private WatchData createWatch(WatchData parentWatchData, boolean user, File path, int mask, int linuxMask, boolean watchSubtree, NotipyListener listener) throws NotipyException {
+    private WatchData createWatch(WatchData parentWatchData,
+                                  boolean user,
+                                  File path,
+                                  int mask,
+                                  int linuxMask,
+                                  boolean watchSubtree,
+                                  NotipyListener listener) throws NotipyException {
         String absPath = path.getPath();
         int wd = _watchIDCounter++;
         int linuxWd = Notipy_linux.addWatch(absPath, linuxMask);
@@ -133,7 +143,10 @@ public class JNotifyAdapterLinux implements INotipyAdapter {
     }
 
 
-    private void registerToSubTree(boolean isRoot, WatchData parentWatch, File root, boolean fireCreatedEvents) throws NotipyException {
+    private void registerToSubTree(boolean isRoot,
+                                   WatchData parentWatch,
+                                   File root,
+                                   boolean fireCreatedEvents) throws NotipyException {
         if (!parentWatch._user) {
             throw new RuntimeException("!parentWatch._user");
         }
