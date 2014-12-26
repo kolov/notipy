@@ -71,7 +71,7 @@
                                         <argument>target/c/gen</argument>
                                         <argument>-classpath</argument>
                                         <argument>src/main/java</argument>
-                                        <argument>com.akolov.notipy.linux.Notipy_linux</argument>
+                                        <argument>Notipy_linux</argument>
                                     </arguments>
                                 </configuration>
                             </execution>

@@ -39,7 +39,7 @@
  ******************************************************************************/
 
 
-package com.akolov.notipy.linux;
+package linux;
 
 
 import com.akolov.notipy.INotifyListener;

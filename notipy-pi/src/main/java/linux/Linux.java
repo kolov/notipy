@@ -1,4 +1,4 @@
-package com.akolov.notipy.linux;
+package linux;
 
 
 public class Linux {
