@@ -14,8 +14,8 @@
     </properties>
 
     <scm>
-        <connection>scm:git:https://github.com/kolov/notipy.git</connection>
-        <developerConnection>scm:git:https://github.com/kolov/notipy.git</developerConnection>
+        <connection>scm:git:git@github.com:kolov/notipy.git</connection>
+        <developerConnection>scm:git:git@github.com:kolov/notipy.git</developerConnection>
         <tag>flow-4.0.0.88</tag>
     </scm>
 
