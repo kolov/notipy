@@ -157,7 +157,7 @@
     <distributionManagement>
 
         <repository>
-            <id>nexus.akolov</id>
+            <id>releases-akolov</id>
             <name>Deployment akolov.com</name>
             <url>https://nexus.akolov.com/content/repositories/releases/</url>
         </repository>
