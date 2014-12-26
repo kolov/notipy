@@ -3,7 +3,7 @@
 
     <groupId>com.akolov.notipy</groupId>
     <artifactId>notipy</artifactId>
-    <version>0.1.1-SNAPSHOT</version>
+    <version>0.1.1</version>
     <packaging>jar</packaging>
 
     <name>notipy</name>
@@ -16,7 +16,7 @@
     <scm>
         <connection>scm:git:git@github.com:kolov/notipy.git</connection>
         <developerConnection>scm:git:git@github.com:kolov/notipy.git</developerConnection>
-        <tag>flow-4.0.0.88</tag>
+        <tag>notipy-0.1.1</tag>
     </scm>
 
     <build>
