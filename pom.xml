@@ -154,4 +154,18 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    <distributionManagement>
+
+        <repository>
+            <id>nexus.akolov</id>
+            <name>Deployment akolov.com</name>
+            <url>https://nexus.akolov.com/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots-akolov</id>
+            <name>Snapshots akolov.com</name>
+            <url>https://nexus.akolov.com/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
 </project>

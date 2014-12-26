@@ -43,14 +43,17 @@ package com.akolov.notipy.linux;
 
 
 import com.akolov.notipy.INotifyListener;
+import com.akolov.notipy.Notipy;
 import com.akolov.notipy.NotipyAdapter;
 import com.akolov.notipy.NotipyException;
-import com.akolov.notipy.Notipy;
 import com.akolov.notipy.NotipyListener;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -59,14 +62,11 @@ public class NotipyAdapterLinux implements NotipyAdapter {
 
     private static final Logger LOG = Logger.getLogger(Notipy_linux.class.getName());
 
-    private Hashtable<Integer, Integer> _linuxWd2Wd;
-    private Hashtable<Integer, WatchData> _id2Data;
+    private Map<Integer, Integer> linuxIndecesToOurIndices;
+    private Map<Integer, WatchData> indicesOfWatchdata;
+    private Set<String> autowatchPaths;
 
-    /**
-     * A set of files which was added by registerToSubTree (auto-watches)
-     */
-    private Hashtable<String, String> _autoWatchesPaths;
-    private static int _watchIDCounter = 0;
+    private static int counter = 0;
 
     public NotipyAdapterLinux() {
         Notipy_linux.setNotifyListener(new INotifyListener() {
@@ -79,9 +79,9 @@ public class NotipyAdapterLinux implements NotipyAdapter {
             }
         });
 
-        _id2Data = new Hashtable<Integer, WatchData>();
-        _linuxWd2Wd = new Hashtable<Integer, Integer>();
-        _autoWatchesPaths = new Hashtable<String, String>();
+        indicesOfWatchdata = new Hashtable<Integer, WatchData>();
+        linuxIndecesToOurIndices = new Hashtable<Integer, Integer>();
+        autowatchPaths = new HashSet<>();
     }
 
     public String addWatch(String path, int mask, boolean watchSubtree, NotipyListener listener)
@@ -136,13 +136,13 @@ public class NotipyAdapterLinux implements NotipyAdapter {
                                   boolean watchSubtree,
                                   NotipyListener listener) throws NotipyException {
         String absPath = path.getPath();
-        int wd = _watchIDCounter++;
+        int wd = counter++;
         int linuxWd = Notipy_linux.addWatch(absPath, linuxMask);
         WatchData watchData = new WatchData(parentWatchData, user, absPath, wd, linuxWd, mask, linuxMask, watchSubtree, listener);
-        _linuxWd2Wd.put(Integer.valueOf(linuxWd), Integer.valueOf(wd));
-        _id2Data.put(Integer.valueOf(wd), watchData);
+        linuxIndecesToOurIndices.put(Integer.valueOf(linuxWd), Integer.valueOf(wd));
+        indicesOfWatchdata.put(Integer.valueOf(wd), watchData);
         if (!user) {
-            _autoWatchesPaths.put(absPath, absPath);
+            autowatchPaths.add(absPath);
         }
         return watchData;
     }
@@ -195,9 +195,9 @@ public class NotipyAdapterLinux implements NotipyAdapter {
     public boolean removeWatch(String wd) throws NotipyException {
         LOG.log(Level.FINE, "JNotifyAdapterLinux.removeWatch(" + wd + ")");
 
-        synchronized (_id2Data) {
-            if (_id2Data.containsKey(Integer.valueOf(wd))) {
-                WatchData watchData = (WatchData) _id2Data.get(Integer.valueOf(wd));
+        synchronized (indicesOfWatchdata) {
+            if (indicesOfWatchdata.containsKey(Integer.valueOf(wd))) {
+                WatchData watchData = (WatchData) indicesOfWatchdata.get(Integer.valueOf(wd));
                 unwatch(watchData);
                 return true;
             } else {
@@ -242,15 +242,15 @@ public class NotipyAdapterLinux implements NotipyAdapter {
         debugLinux(name, linuxWd, linuxMask, cookie);
 
 
-        synchronized (_id2Data) {
-            Integer iwd = (Integer) _linuxWd2Wd.get(Integer.valueOf(linuxWd));
+        synchronized (indicesOfWatchdata) {
+            Integer iwd = (Integer) linuxIndecesToOurIndices.get(Integer.valueOf(linuxWd));
             if (iwd == null) {
                 // This happens if an exception is thrown because used too many watches.
                 System.out.println("JNotifyAdapterLinux: warning, recieved event for an unregisted LinuxWD " + linuxWd + " ignoring...");
                 return;
             }
 
-            WatchData watchData = _id2Data.get(iwd);
+            WatchData watchData = indicesOfWatchdata.get(iwd);
             if (watchData != null) {
                 if ((linuxMask & Linux.IN_CREATE) != 0) {
                     File newRootFile = new File(watchData._path, name);
@@ -273,7 +273,7 @@ public class NotipyAdapterLinux implements NotipyAdapter {
                     if ((watchData._mask & Notipy.FILE_CREATED) != 0) {
                         // fire an event only if the path is not in the path2Watch,
                         // meaning no watch has been created on it.
-                        if (!_autoWatchesPaths.contains(newRootFile.getPath())) {
+                        if (!autowatchPaths.contains(newRootFile.getPath())) {
                             watchData.notifyFileCreated(name);
                         } else {
                             LOG.log(Level.FINE, "Assuming already sent event for " + newRootFile.getPath());
@@ -290,10 +290,10 @@ public class NotipyAdapterLinux implements NotipyAdapter {
                 } else if ((linuxMask & Linux.IN_MOVED_TO) != 0) {
                     watchData.notifyFileRenamed(name, cookie);
                 } else if ((linuxMask & Linux.IN_IGNORED) != 0) {
-                    _linuxWd2Wd.remove(Integer.valueOf(watchData._linuxWd));
-                    _id2Data.remove(Integer.valueOf(watchData._wd));
+                    linuxIndecesToOurIndices.remove(Integer.valueOf(watchData._linuxWd));
+                    indicesOfWatchdata.remove(Integer.valueOf(watchData._wd));
                     if (!watchData._user) {
-                        _autoWatchesPaths.remove(watchData._path);
+                        autowatchPaths.remove(watchData._path);
                         watchData.removeFromParent();
                     }
                 }
@@ -306,8 +306,8 @@ public class NotipyAdapterLinux implements NotipyAdapter {
     private void debugLinux(String name, int linuxWd, int linuxMask, int cookie) {
 
         String s = Linux.getMaskDesc(linuxMask);
-        int wd = _linuxWd2Wd.get(Integer.valueOf(linuxWd)).intValue();
-        WatchData wdata = _id2Data.get(Integer.valueOf(wd));
+        int wd = linuxIndecesToOurIndices.get(Integer.valueOf(linuxWd)).intValue();
+        WatchData wdata = indicesOfWatchdata.get(Integer.valueOf(wd));
         String path;
         if (wdata != null) {
             path = wdata._path;
@@ -448,7 +448,7 @@ public class NotipyAdapterLinux implements NotipyAdapter {
     }
 
     public int unitTest_getNumWatches() {
-        return _id2Data.size();
+        return indicesOfWatchdata.size();
     }
 
 
