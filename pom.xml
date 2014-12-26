@@ -32,7 +32,7 @@
 
     <profiles>
         <profile>
-            <id>linux</id>
+            <id>pi</id>
             <build>
                 <plugins>
                     <plugin>
