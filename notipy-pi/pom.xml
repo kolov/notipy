@@ -8,11 +8,11 @@
         <version>0.1.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>notipy-api</artifactId>
+    <artifactId>notipy-pi</artifactId>
 
     <packaging>jar</packaging>
 
-    <name>notipy-py</name>
+    <name>notipy-pi</name>
 
     <profiles>
         <profile>
