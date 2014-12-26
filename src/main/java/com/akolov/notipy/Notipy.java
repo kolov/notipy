@@ -64,7 +64,12 @@ public class Notipy {
                 _instance = new NotifyScanAdapter();
                 break;
             case INOTIFY:
-                LibLoader.extractAndLoadLibraryFile("notipy.so", true);
+                try {
+                    LibLoader.extractAndLoadLibraryFile("notipy.so", true);
+                } catch (Exception e) {
+                    System.err.println("Couls nor load linux library. Was this built with the linux profile?");
+                    throw e;
+                }
                 _instance = new NotipyAdapterLinux();
                 break;
             default:
