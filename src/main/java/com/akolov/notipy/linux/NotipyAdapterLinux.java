@@ -69,6 +69,14 @@ public class NotipyAdapterLinux implements NotipyAdapter {
     private static int counter = 0;
 
     public NotipyAdapterLinux() {
+
+        try {
+            LibLoader.extractAndLoadLibraryFile("notipy.so", true);
+        } catch (Exception e) {
+            System.err.println("Couls nor load linux library. Was this built with the linux profile?");
+            throw e;
+        }
+
         Notipy_linux.setNotifyListener(new INotifyListener() {
             public void notify(String name, int wd, int mask, int cookie) {
                 try {

@@ -6,10 +6,10 @@ import java.io.InputStream;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-/** 
+/**
  * Initializes Java.util.Logging eith the content of log-debug.properties
  * To use this settings:
- * -Djava.util.logging.config.class=com.akolov.notipy.jul.LogDebug
+ * -Djava.util.logging.config.class=LogDebug
  */
 public class LogDebug {
 

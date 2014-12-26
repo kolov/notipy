@@ -36,7 +36,7 @@
 
 package com.akolov.notipy;
 
-import com.akolov.notipy.linux.NotipyAdapterLinux;
+
 import com.akolov.notipy.scan.NotifyScanAdapter;
 
 
@@ -65,12 +65,11 @@ public class Notipy {
                 break;
             case INOTIFY:
                 try {
-                    LibLoader.extractAndLoadLibraryFile("notipy.so", true);
-                } catch (Exception e) {
-                    System.err.println("Couls nor load linux library. Was this built with the linux profile?");
-                    throw e;
+                    _instance =
+                            (NotipyAdapter) Class.forName("com.akolov.notipy.linux.NotipyAdapterLinux").newInstance();
+                } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+                    throw new RuntimeException(e);
                 }
-                _instance = new NotipyAdapterLinux();
                 break;
             default:
                 throw new RuntimeException("Unexpected");
