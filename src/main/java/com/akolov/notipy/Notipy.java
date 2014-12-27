@@ -39,6 +39,9 @@ package com.akolov.notipy;
 import com.akolov.notipy.linux.NotipyAdapterLinux;
 import com.akolov.notipy.scan.NotifyScanAdapter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class Notipy {
     public static final int FILE_CREATED = 0x1;
@@ -47,22 +50,27 @@ public class Notipy {
     public static final int FILE_RENAMED = 0x8;
     public static final int FILE_ANY = FILE_CREATED | FILE_DELETED | FILE_MODIFIED | FILE_RENAMED;
 
-    private NotipyAdapter _instance;
+    private static Map<Mode, NotipyAdapter> instances = new HashMap<>();
 
-    public Notipy() {
+    public static NotipyAdapter getInstance() {
         Mode mode = new ModeDetector().getMode();
-        initInMode(mode);
+        return getInstance(mode);
     }
 
-    public Notipy(Mode mode) {
-        initInMode(mode);
+    public static synchronized NotipyAdapter getInstance(Mode mode) {
+        NotipyAdapter result = instances.get(mode);
+        if (result == null) {
+            result = create(mode);
+            instances.put(mode, result);
+        }
+        return result;
     }
 
-    private void initInMode(Mode mode) {
+
+    private static NotipyAdapter create(Mode mode) {
         switch (mode) {
             case SCAN:
-                _instance = new NotifyScanAdapter();
-                break;
+                return new NotifyScanAdapter();
             case INOTIFY:
                 try {
                     LibLoader.extractAndLoadLibraryFile("notipy.so", true);
@@ -70,20 +78,10 @@ public class Notipy {
                     System.err.println("Couls nor load linux library. Was this built with the linux profile?");
                     throw e;
                 }
-                _instance = new NotipyAdapterLinux();
-                break;
+                return new NotipyAdapterLinux();
             default:
                 throw new RuntimeException("Unexpected");
         }
-    }
-
-    public String addWatch(String path, int mask, boolean watchSubtree, NotipyListener listener) throws
-            NotipyException {
-        return _instance.addWatch(path, mask, watchSubtree, listener);
-    }
-
-    public boolean removeWatch(String watchId) throws NotipyException {
-        return _instance.removeWatch(watchId);
     }
 
 

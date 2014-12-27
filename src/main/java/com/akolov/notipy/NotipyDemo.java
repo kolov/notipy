@@ -37,7 +37,6 @@
 package com.akolov.notipy;
 
 import java.io.File;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
@@ -47,20 +46,8 @@ public class NotipyDemo {
 
     public static void main(String[] args) throws Exception {
 
-
-
-        String loggingClass = System.getProperty("java.util.logging.config.class");
-        if (loggingClass != null) {
-      //     Class.forName(loggingClass).newInstance();
-        }
-
-        LOG.log(Level.ALL, "NotipyDemo Logging leveel ALL");
-        LOG.log(Level.WARNING, "NotipyDemo Logging leveel WARN");
-        LOG.log(Level.FINE, "NotipyDemo Logging leveel FINE");
-
-       // System.out.println(" sysprop=[" + loggingClass + "]");
         String dir = new File(args.length == 0 ? "." : args[0]).getCanonicalFile().getAbsolutePath();
-        new Notipy().addWatch(dir, Notipy.FILE_ANY, true, new NotipyListener() {
+        Notipy.getInstance().addWatch(dir, Notipy.FILE_ANY, true, new NotipyListener() {
             public void fileRenamed(int wd, String rootPath, String oldName,
                                     String newName) {
                 System.out.println("renamed " + rootPath + " : " + oldName + " -> " + newName);
