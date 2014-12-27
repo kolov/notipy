@@ -138,15 +138,23 @@ public class NotifyScanAdapter implements NotipyAdapter {
         private void notifyNew(String name) {
             for (RegisteredListener listener : listeners) {
                 if (listener.subscribedToNew()) {
-                    listener.listener.fileCreated(2, name, name);
+                    listener.listener.fileCreated(0, getPath(name), getFilename(name));
                 }
             }
+        }
+
+        private String getFilename(String fullName) {
+            return fullName.substring(fullName.lastIndexOf(File.separator) + 1);
+        }
+
+        private String getPath(String fullName) {
+            return fullName.substring(0, fullName.lastIndexOf(File.separator));
         }
 
         private void notifyChanged(String name) {
             for (RegisteredListener listener : listeners) {
                 if (listener.subscribedToModify()) {
-                    listener.listener.fileModified(2, name, name);
+                    listener.listener.fileModified(0, getPath(name), getFilename(name));
                 }
             }
         }
