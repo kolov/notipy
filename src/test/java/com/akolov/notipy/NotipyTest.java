@@ -8,7 +8,7 @@ import java.io.File;
 public class NotipyTest {
 
 
-    private Notipy subject = new Notipy();
+    private NotipyAdapter subject = Notipy.getInstance();
 
     @Test
     public void testAddWatch() throws Exception {

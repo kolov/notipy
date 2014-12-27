@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.akolov.notipy</groupId>
@@ -7,7 +8,7 @@
     <packaging>jar</packaging>
 
     <name>notipy</name>
-    <url>http://maven.apache.org</url>
+    <url>https://github.com/kolov/notipy</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -16,8 +17,8 @@
     <scm>
         <connection>scm:git:git@github.com:kolov/notipy.git</connection>
         <developerConnection>scm:git:git@github.com:kolov/notipy.git</developerConnection>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
     <build>
         <plugins>
@@ -162,8 +163,8 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    <distributionManagement>
 
+    <distributionManagement>
         <repository>
             <id>releases-akolov</id>
             <name>Deployment akolov.com</name>

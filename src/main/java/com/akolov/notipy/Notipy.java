@@ -50,6 +50,9 @@ public class Notipy {
     public static final int FILE_RENAMED = 0x8;
     public static final int FILE_ANY = FILE_CREATED | FILE_DELETED | FILE_MODIFIED | FILE_RENAMED;
 
+    private Notipy() {
+
+    }
     private static Map<Mode, NotipyAdapter> instances = new HashMap<>();
 
     public static NotipyAdapter getInstance() {
