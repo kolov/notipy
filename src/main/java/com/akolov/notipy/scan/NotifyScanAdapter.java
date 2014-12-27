@@ -126,9 +126,16 @@ public class NotifyScanAdapter implements NotipyAdapter {
 
             for (Map.Entry<String, Long> entry : files.entrySet()) {
                 Long previousEntry = snapshot.files.get(entry.getKey());
+                if( entry.getKey().endsWith("assen.jpg")) {
+                    System.out.println("entry= " + entry);
+                    System.out.println("previous=" + previousEntry);
+                }
                 if (previousEntry == null) {
                     notifyNew(entry.getKey());
                 } else if (previousEntry.longValue() != entry.getValue().longValue()) {
+                    if( entry.getKey().endsWith("assen.jpg")) {
+                        System.out.println(previousEntry);
+                    }
                     notifyChanged(entry.getKey());
                 }
             }
