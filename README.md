@@ -39,7 +39,7 @@ To select the watch implementation:
  - new Notipy() will use the platform-independent primitive scan implementation by default
  - If environment variable notipy.mode is defined, (values inotify or scan), it will ne honoured
  - Or pass a parameter to constructor: new Notipy(Mode.INOTIFY) etc.
-A full example available [gere](https://github.com/kolov/goby) 
+A full example available [here](https://github.com/kolov/goby) 
 
 What about the fish?
 ======
