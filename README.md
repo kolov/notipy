@@ -8,7 +8,7 @@ Java library to detect file system changes that works on the Raspberry Pi (based
  - No separate CVS modules, one github project
  - Native Library packaged in Jar and loaded automatically, no -Djava.library.path 
  - Doesn't detect the OS, operation mode is controlled explicitely
- - An OS-neutral ineficient implementation for development (e.g. develop on Mac, deploy on the Pi)
+ - An OS-neutral primitive implementation for development (e.g. develop on Mac, deploy on the Pi)
 
 Why
 ======
@@ -24,6 +24,8 @@ or Raspbery Pi native version *on a Raspberry Pi* with
 
     mvn clean install -P pi
     
+or download it on your own risk from [hrer](http://nexus.akolov.com/content/repositories/releases/com/akolov/notipy/notipy/0.1.6/)
+    
 Test anywhere with:
 
     java -cp target/notipy-{version}.jar com.akolov.notipy.NotipyDemo
@@ -34,11 +36,12 @@ Or test on the Raspberry Pi with
 This starts watching the files in the current directory.
 
 To select the watch implementation:
- - new Notipy() will use the platform-independent inefficient scan implementation by default
+ - new Notipy() will use the platform-independent primitive scan implementation by default
  - If environment variable notipy.mode is defined, (values inotify or scan), it will ne honoured
  - Or pass a parameter to constructor: new Notipy(Mode.INOTIFY) etc.
+A full example available [gere](https://github.com/kolov/goby) 
 
 What about the fish?
 ======
 
-The web abb app using *notipy* to stream the Raspberry camera output is still in progress, see project [goby](https://github.com/kolov/goby) on github. 
+The web abb app using *notipy* to stream the Raspberry camera output works at the max raspistill speed which is still disappointing:see project [Goby](https://github.com/kolov/goby) on github. 
