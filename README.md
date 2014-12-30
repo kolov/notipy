@@ -24,7 +24,7 @@ or Raspbery Pi native version *on a Raspberry Pi* with
 
     mvn clean install -P pi
     
-or download it on your own risk from [hrer](http://nexus.akolov.com/content/repositories/releases/com/akolov/notipy/notipy/0.1.6/)
+or download it on your own risk from [this nexus repo](http://nexus.akolov.com/content/repositories/releases/com/akolov/notipy/notipy/0.1.6/)
     
 Test anywhere with:
 
@@ -39,7 +39,7 @@ To select the watch implementation:
  - new Notipy() will use the platform-independent primitive scan implementation by default
  - If environment variable notipy.mode is defined, (values inotify or scan), it will ne honoured
  - Or pass a parameter to constructor: new Notipy(Mode.INOTIFY) etc.
-A full example available [here](https://github.com/kolov/goby) 
+A full example of a web application streaming an imag from the Pi camera available [here](https://github.com/kolov/goby) 
 
 What about the fish?
 ======
